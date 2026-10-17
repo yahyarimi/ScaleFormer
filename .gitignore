@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Raw datasets
+/data/
+*.tfrecord
+*.tfrecords
+*.h5
+*.hdf5
+
+# Model checkpoints
+/checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Experiment services / temporary files
+wandb/
+runs/
+.cache/
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
