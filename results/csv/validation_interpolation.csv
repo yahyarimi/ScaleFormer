@@ -1,0 +1,2 @@
+model,split,run,pattern,requested_density,num_samples,full_nmse_linear,full_nmse_db,missing_nmse_linear,missing_nmse_db,total_time_seconds,milliseconds_per_sample
+linear_frequency_interpolation,validation,0056,comb,0.1,5220,0.000604306820405646,-32.187425041334386,0.0006710677388611005,-31.732336391026163,9.130962799998088,1.7492265900379478
