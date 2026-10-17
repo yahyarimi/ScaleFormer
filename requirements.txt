@@ -1,0 +1,5 @@
+numpy==2.5.2
+torch==2.10.0
+torchvision==0.25.0
+torchaudio==2.10.0
+tensorflow-cpu==2.21.0
