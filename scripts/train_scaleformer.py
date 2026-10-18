@@ -533,15 +533,26 @@ def main():
         exist_ok=True,
     )
 
-    checkpoint_path = (
+    """checkpoint_path = (
         checkpoint_dir
         / (
             f"scaleformer_seed"
             f"{args.seed}_best.pt"
         )
+    )"""
+
+    run_name = (
+    f"scaleformer_seed{args.seed}"
+    f"_bs{args.batch_size}"
     )
 
-    history_file = Path(
+    checkpoint_path = (
+        checkpoint_dir
+        / f"{run_name}_best.pt"
+    )
+
+
+    """history_file = Path(
         "results/csv/"
         f"scaleformer_seed"
         f"{args.seed}_training.csv"
@@ -551,6 +562,16 @@ def main():
         "results/csv/"
         f"scaleformer_seed"
         f"{args.seed}_summary.json"
+    )"""
+
+    history_file = Path(
+    "results/csv/"
+    f"{run_name}_training.csv"
+    )
+
+    summary_file = Path(
+        "results/csv/"
+        f"{run_name}_summary.json"
     )
 
     history = []
@@ -875,6 +896,11 @@ def main():
     )
 
     summary = {
+        "batch_size": args.batch_size,
+        "learning_rate": args.lr,
+        "weight_decay": args.weight_decay,
+        "maximum_epochs": args.epochs,
+        "patience": args.patience,
         "model": "ScaleFormer",
         "seed": args.seed,
         "training_runs": [
