@@ -1,0 +1,2 @@
+epoch,train_missing_mse,val_missing_mse_normalized,val_full_nmse_db,val_missing_nmse_db,learning_rate,peak_gpu_memory_mb,epoch_seconds
+1,0.0027645452572482693,0.002516837567412134,-26.308859030111048,-26.086751273927447,0.0005,552.6630859375,399.11157298088074
