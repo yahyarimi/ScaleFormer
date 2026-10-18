@@ -1,0 +1,22 @@
+{
+    "model": "ResidualFrequencyCNN",
+    "split": "validation",
+    "run": "0056",
+    "pattern": "random",
+    "requested_density": 0.05,
+    "observed_subcarriers": 51,
+    "seeds": [
+        7,
+        42,
+        123
+    ],
+    "num_seeds": 3,
+    "full_nmse_db_mean": -26.359649107582666,
+    "full_nmse_db_sample_std": 0.035958808997714684,
+    "missing_nmse_db_mean": -26.137541351399076,
+    "missing_nmse_db_sample_std": 0.035958808997714684,
+    "interpolation_full_nmse_db": -25.806,
+    "interpolation_missing_nmse_db": -25.5839,
+    "mean_gain_vs_interpolation_full_db": 0.5536491075826646,
+    "mean_gain_vs_interpolation_missing_db": 0.5536413513990759
+}
