@@ -243,6 +243,92 @@ class SharedLocalFrequencyEncoder(nn.Module):
 
         return x
 
+class SharedPointwiseEncoder(nn.Module):
+    """
+    Pointwise ablation encoder.
+
+    Each antenna-frequency location is encoded
+    independently from:
+        real CSI,
+        imaginary CSI,
+        observation mask.
+
+    There is no convolution and therefore no local
+    frequency receptive field.
+    """
+
+    def __init__(
+        self,
+        dim: int = 48,
+    ):
+        super().__init__()
+
+        self.dim = dim
+
+        self.net = nn.Sequential(
+            nn.Linear(
+                3,
+                dim,
+            ),
+            nn.GELU(),
+            nn.Linear(
+                dim,
+                dim,
+            ),
+        )
+
+    def forward(
+        self,
+        interpolated: torch.Tensor,
+        mask: torch.Tensor,
+    ) -> torch.Tensor:
+
+        if interpolated.ndim != 4:
+            raise ValueError(
+                "interpolated must have shape "
+                "[N, 2, B, F]."
+            )
+
+        batch_size = interpolated.shape[0]
+        num_antennas = interpolated.shape[2]
+        num_subcarriers = interpolated.shape[3]
+
+        if mask.shape != (
+            batch_size,
+            1,
+            num_antennas,
+            num_subcarriers,
+        ):
+            raise ValueError(
+                "mask and CSI dimensions do not match."
+            )
+
+        # [N,2,B,F] -> [N,B,F,2]
+        csi = interpolated.permute(
+            0,
+            2,
+            3,
+            1,
+        )
+
+        # [N,1,B,F] -> [N,B,F,1]
+        mask_features = mask.permute(
+            0,
+            2,
+            3,
+            1,
+        )
+
+        x = torch.cat(
+            [
+                csi,
+                mask_features,
+            ],
+            dim=-1,
+        )
+
+        # [N,B,F,D]
+        return self.net(x)
 
 class CoordinateEncoder(nn.Module):
     """
@@ -553,8 +639,36 @@ class ScaleFormer(nn.Module):
         local_kernel_size: int = 7,
         decoder_chunk_size: int = 4096,
         dropout: float = 0.0,
+        variant: str = "full",
     ):
         super().__init__()
+
+        valid_variants = {
+            "full",
+            "no_global",
+            "no_local",
+            "no_coordinates",
+        }
+
+        if variant not in valid_variants:
+            raise ValueError(
+                f"Unknown SCALE-Former variant: {variant}. "
+                f"Expected one of {sorted(valid_variants)}."
+            )
+
+        self.variant = variant
+
+        self.use_local = (
+            variant != "no_local"
+        )
+
+        self.use_global = (
+            variant != "no_global"
+        )
+
+        self.use_coordinates = (
+            variant != "no_coordinates"
+        )
 
         if dim % num_heads != 0:
             raise ValueError(
@@ -581,54 +695,81 @@ class ScaleFormer(nn.Module):
             decoder_chunk_size
         )
 
-        self.local_encoder = (
-            SharedLocalFrequencyEncoder(
-                dim=dim,
-                num_blocks=num_local_blocks,
-                kernel_size=local_kernel_size,
-            )
-        )
-
-        self.coordinate_encoder = (
-            CoordinateEncoder(
-                dim=dim
-            )
-        )
-
-        self.latent_tokens = nn.Parameter(
-            torch.randn(
-                1,
-                num_latents,
-                dim,
-            )
-            * 0.02
-        )
-
-        self.global_blocks = nn.ModuleList(
-            [
-                LatentGlobalBlock(
+        if self.use_local:
+            self.local_encoder = (
+                SharedLocalFrequencyEncoder(
                     dim=dim,
-                    num_heads=num_heads,
-                    dropout=dropout,
+                    num_blocks=num_local_blocks,
+                    kernel_size=local_kernel_size,
                 )
-                for _ in range(
-                    num_global_blocks
-                )
-            ]
-        )
+            )
 
-        self.decoder_blocks = nn.ModuleList(
-            [
-                CoordinateDecoderBlock(
+            self.pointwise_encoder = None
+
+        else:
+            self.local_encoder = None
+
+            self.pointwise_encoder = (
+                SharedPointwiseEncoder(
                     dim=dim,
-                    num_heads=num_heads,
-                    dropout=dropout,
                 )
-                for _ in range(
-                    num_decoder_blocks
+            )
+
+        if self.use_coordinates:
+            self.coordinate_encoder = (
+                CoordinateEncoder(
+                    dim=dim
                 )
-            ]
-        )
+            )
+        else:
+            self.coordinate_encoder = None
+
+        if self.use_global:
+
+            self.latent_tokens = nn.Parameter(
+                torch.randn(
+                    1,
+                    num_latents,
+                    dim,
+                )
+                * 0.02
+            )
+
+            self.global_blocks = nn.ModuleList(
+                [
+                    LatentGlobalBlock(
+                        dim=dim,
+                        num_heads=num_heads,
+                        dropout=dropout,
+                    )
+                    for _ in range(
+                        num_global_blocks
+                    )
+                ]
+            )
+
+            self.decoder_blocks = nn.ModuleList(
+                [
+                    CoordinateDecoderBlock(
+                        dim=dim,
+                        num_heads=num_heads,
+                        dropout=dropout,
+                    )
+                    for _ in range(
+                        num_decoder_blocks
+                    )
+                ]
+            )
+
+        else:
+
+            self.register_parameter(
+                "latent_tokens",
+                None,
+            )
+
+            self.global_blocks = nn.ModuleList()
+            self.decoder_blocks = nn.ModuleList()
 
         self.residual_head = nn.Sequential(
             nn.LayerNorm(
@@ -872,63 +1013,112 @@ class ScaleFormer(nn.Module):
             mask
         )
 
-        local_features = (
-            self.local_encoder(
-                interpolated,
-                mask,
-            )
-        )
+        if self.use_local:
 
-        coordinates = (
-            self.coordinate_encoder(
-                num_antennas=num_antennas,
-                num_subcarriers=num_subcarriers,
+            base_features = (
+                self.local_encoder(
+                    interpolated,
+                    mask,
+                )
+            )
+
+        else:
+
+            base_features = (
+                self.pointwise_encoder(
+                    interpolated,
+                    mask,
+                )
+            )
+
+        if self.use_coordinates:
+
+            coordinates = (
+                self.coordinate_encoder(
+                    num_antennas=num_antennas,
+                    num_subcarriers=num_subcarriers,
+                    device=interpolated.device,
+                    dtype=interpolated.dtype,
+                )
+            )
+
+        else:
+
+            coordinates = torch.zeros(
+                num_antennas,
+                num_subcarriers,
+                self.dim,
                 device=interpolated.device,
                 dtype=interpolated.dtype,
             )
-        )
 
-        observed_tokens = (
-            self._extract_observed_tokens(
-                features=local_features,
-                coordinates=coordinates,
-                mask=mask,
+        if self.use_global:
+
+            observed_tokens = (
+                self._extract_observed_tokens(
+                    features=base_features,
+                    coordinates=coordinates,
+                    mask=mask,
+                )
             )
-        )
 
-        latents = (
-            self.latent_tokens
-            .expand(
+            latents = (
+                self.latent_tokens
+                .expand(
+                    batch_size,
+                    -1,
+                    -1,
+                )
+            )
+
+            for block in self.global_blocks:
+
+                latents = block(
+                    latents,
+                    observed_tokens,
+                )
+
+            queries = (
+                base_features
+                + coordinates.unsqueeze(0)
+            )
+
+            queries = queries.reshape(
                 batch_size,
-                -1,
-                -1,
-            )
-        )
-
-        for block in self.global_blocks:
-            latents = block(
-                latents,
-                observed_tokens,
+                num_antennas
+                * num_subcarriers,
+                self.dim,
             )
 
-        # Dynamic full-grid queries.
-        queries = (
-            local_features
-            + coordinates
-            .unsqueeze(0)
-        )
+            residual = self._decode_chunks(
+                query_tokens=queries,
+                latents=latents,
+            )
 
-        queries = queries.reshape(
-            batch_size,
-            num_antennas
-            * num_subcarriers,
-            self.dim,
-        )
+        else:
 
-        residual = self._decode_chunks(
-            query_tokens=queries,
-            latents=latents,
-        )
+            # Local-only ablation.
+            #
+            # No latent global pathway and no decoder
+            # cross-attention. Each grid feature is mapped
+            # directly to a residual correction.
+            queries = (
+                base_features
+                + coordinates.unsqueeze(0)
+            )
+
+            queries = queries.reshape(
+                batch_size,
+                num_antennas
+                * num_subcarriers,
+                self.dim,
+            )
+
+            residual = (
+                self.residual_head(
+                    queries
+                )
+            )
 
         # [N, BF, 2]
         # ->

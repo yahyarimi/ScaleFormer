@@ -422,9 +422,141 @@ def test_antenna_dependent_mask_rejected():
         "antenna-dependent masks."
     )
 
+def test_ablation_variants_forward():
+
+    variants = [
+        "full",
+        "no_global",
+        "no_local",
+        "no_coordinates",
+    ]
+
+    interpolated, mask = make_inputs(
+        batch_size=1,
+        antennas=6,
+        frequencies=96,
+        pilot_step=8,
+    )
+
+    for variant in variants:
+
+        model = ScaleFormer(
+            dim=48,
+            num_heads=4,
+            num_latents=8,
+            num_local_blocks=2,
+            num_global_blocks=2,
+            num_decoder_blocks=1,
+            decoder_chunk_size=64,
+            variant=variant,
+        )
+
+        output = model(
+            interpolated,
+            mask,
+        )
+
+        assert output.shape == (
+            1,
+            2,
+            6,
+            96,
+        )
+
+
+def test_ablation_initializes_to_interpolation():
+
+    variants = [
+        "full",
+        "no_global",
+        "no_local",
+        "no_coordinates",
+    ]
+
+    interpolated, mask = make_inputs(
+        batch_size=1,
+        antennas=4,
+        frequencies=64,
+        pilot_step=8,
+    )
+
+    for variant in variants:
+
+        model = ScaleFormer(
+            variant=variant,
+        )
+
+        output = model(
+            interpolated,
+            mask,
+        )
+
+        assert torch.equal(
+            output,
+            interpolated,
+        )
+
+
+def test_ablation_parameter_counts():
+
+    variants = [
+        "full",
+        "no_global",
+        "no_local",
+        "no_coordinates",
+    ]
+
+    print()
+
+    for variant in variants:
+
+        model = ScaleFormer(
+            dim=48,
+            num_heads=4,
+            num_latents=16,
+            num_local_blocks=2,
+            num_global_blocks=2,
+            num_decoder_blocks=1,
+            decoder_chunk_size=4096,
+            variant=variant,
+        )
+
+        parameters = sum(
+            parameter.numel()
+            for parameter in model.parameters()
+            if parameter.requires_grad
+        )
+
+        print(
+            f"{variant:>14}: "
+            f"{parameters:,} parameters"
+        )
+
+        assert parameters > 0
+
+
+def test_invalid_ablation_rejected():
+
+    try:
+
+        ScaleFormer(
+            variant="invalid_variant"
+        )
+
+    except ValueError:
+        return
+
+    raise AssertionError(
+        "Expected invalid variant "
+        "to raise ValueError."
+    )
 
 if __name__ == "__main__":
     tests = [
+        test_ablation_variants_forward,
+        test_ablation_initializes_to_interpolation,
+        test_ablation_parameter_counts,
+        test_invalid_ablation_rejected,
         test_output_shape,
         test_initial_model_equals_interpolation,
         test_observed_values_preserved,
