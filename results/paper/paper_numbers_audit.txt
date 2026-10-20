@@ -1,0 +1,52 @@
+SCALE-FORMER PAPER NUMBERS AUDIT
+================================================================================
+
+Primary interpolation protocol row:
+PASS  0056 | random | 5% | 51 observed subcarriers | 5,220 samples | full=-25.805978451635 dB | missing=-25.583870695451 dB
+
+Primary validation/test table:
+PASS  validation_0056 | Linear interpolation
+PASS  validation_0056 | Residual Frequency CNN
+PASS  validation_0056 | Full-Attention Transformer
+PASS  validation_0056 | SCALE-Former
+PASS  test_0057 | Linear interpolation
+PASS  test_0057 | Residual Frequency CNN
+PASS  test_0057 | Full-Attention Transformer
+PASS  test_0057 | SCALE-Former
+
+Efficiency table:
+PASS  Linear interpolation
+PASS  Residual Frequency CNN
+PASS  Full-Attention Transformer
+PASS  SCALE-Former
+
+Ablation headline values:
+PASS  ablation summary values
+
+Robustness headline values:
+PASS  robustness summary values
+
+Scalability headline values:
+PASS  scalability summary values
+
+Headline claims computed from audited source values:
+PASS  SCALE-Former vs Transformer test missing NMSE gain = 1.7121 dB
+PASS  SCALE-Former vs Transformer linear NMSE reduction = 32.58%
+PASS  SCALE-Former vs CNN test missing NMSE gain = 4.1191 dB
+PASS  SCALE-Former vs interpolation test missing NMSE gain = 4.6510 dB
+
+Efficiency trade-off vs full-attention Transformer:
+INFO  Transformer has 8.89% more trainable parameters than SCALE-Former.
+INFO  SCALE-Former core-MAC ratio = 2.454x
+INFO  SCALE-Former peak-memory ratio = 3.290x
+INFO  SCALE-Former E2E-latency ratio = 4.043x
+
+Excluded/superseded headline artifacts:
+INFO  validation_interpolation.csv is a separate comb-10% run and is not the primary random-5% interpolation source.
+INFO  latency_benchmark.csv/json are single-run diagnostic outputs.
+INFO  scaleformer_seed42_bs4_smoke_* are smoke-test outputs.
+
+Repository housekeeping:
+REVIEW scripts/train_frequency_transformer1.py manually; it appears to be an alternate/duplicate trainer.
+
+FINAL STATUS: ALL PAPER-NUMBER AUDITS PASSED

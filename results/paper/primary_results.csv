@@ -1,0 +1,9 @@
+stage,method,parameters,full_nmse_db_mean,full_nmse_db_std,missing_nmse_db_mean,missing_nmse_db_std,source_key
+validation_0056,Linear interpolation,0,-25.806,,-25.5839,,validation_interpolation
+validation_0056,Residual Frequency CNN,60160,-26.3596,0.036,-26.1375,0.036,cnn_validation
+validation_0056,Full-Attention Transformer,108928,-28.8937,0.0631,-28.6716,0.0631,transformer_validation
+validation_0056,SCALE-Former,100034,-30.71,0.0837,-30.4879,0.0837,scaleformer_validation
+test_0057,Linear interpolation,0,-25.7545,,-25.5322,,primary_final_test
+test_0057,Residual Frequency CNN,60160,-26.2864,0.0374,-26.0641,0.0374,primary_final_test
+test_0057,Full-Attention Transformer,108928,-28.6934,0.0489,-28.4711,0.0489,transformer_final_test
+test_0057,SCALE-Former,100034,-30.4055,0.0772,-30.1832,0.0772,primary_final_test

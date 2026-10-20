@@ -1,0 +1,93 @@
+{
+    "authoritative_sources": [
+        {
+            "key": "validation_interpolation",
+            "path": "results\\csv\\validation_interpolation_sweep.csv",
+            "bytes": 3135,
+            "sha256": "fe4482a02e81369c0341afc3deb64c2282963df0292fcf46f885e310550eeadb"
+        },
+        {
+            "key": "cnn_validation",
+            "path": "results\\csv\\cnn_validation_3seed_summary.json",
+            "bytes": 692,
+            "sha256": "09706219e9ecf4f10040a547252d70344929894e0ba7c66005fc0bab2b4c76e9"
+        },
+        {
+            "key": "transformer_validation",
+            "path": "results\\csv\\frequency_transformer_validation_3seed_summary.json",
+            "bytes": 1699,
+            "sha256": "2bcd9a25896ea9c916e10382abfbe6af0968f0c41840b20dc64476b6f3755950"
+        },
+        {
+            "key": "scaleformer_validation",
+            "path": "results\\csv\\scaleformer_validation_3seed_summary.json",
+            "bytes": 896,
+            "sha256": "d125c63ec4092708a3ecd5992dd8f9e3e946cc7945e227391e7f83b009ea252f"
+        },
+        {
+            "key": "primary_final_test",
+            "path": "results\\csv\\final_test_0057_summary.json",
+            "bytes": 3228,
+            "sha256": "bda62a75cf45980f5d5f110f216d5fe0c79e10fc44927fc73f5deaa513fa0b02"
+        },
+        {
+            "key": "transformer_final_test",
+            "path": "results\\csv\\frequency_transformer_final_test_0057_summary.json",
+            "bytes": 2717,
+            "sha256": "d46d4d6c14643788bb6e103c6ed1568ba1088aa52ee7e419d462f6bd69e96416"
+        },
+        {
+            "key": "robustness",
+            "path": "results\\csv\\scaleformer_robustness_summary.json",
+            "bytes": 6137,
+            "sha256": "1f39b86967db3a97bc76dfe4042112237c80337def00b79c7ac9e1771999544c"
+        },
+        {
+            "key": "scalability",
+            "path": "results\\csv\\scaleformer_scalability_summary.json",
+            "bytes": 7584,
+            "sha256": "19507b93a096b214031a92bc17be9fa39dbffd91805145e9cd11f8e0c6d03d81"
+        },
+        {
+            "key": "ablation",
+            "path": "results\\csv\\scaleformer_ablation_summary.json",
+            "bytes": 2162,
+            "sha256": "00c899662aa16967523642c2d5e73a24bc44db8cf70befe36d18fbb537cd8672"
+        },
+        {
+            "key": "macs",
+            "path": "results\\csv\\model_macs.json",
+            "bytes": 2313,
+            "sha256": "4f479fa1a93fdf723f2e1acca73fe2e41efcb6b6658a7de1109573c53c7ae3fe"
+        },
+        {
+            "key": "memory",
+            "path": "results\\csv\\memory_benchmark.json",
+            "bytes": 1550,
+            "sha256": "986b1eac5bc93016477445d95ffa8c6a1a9f50c3e8353bd10688733364d42bfd"
+        },
+        {
+            "key": "latency",
+            "path": "results\\csv\\latency_repeated_summary.json",
+            "bytes": 3349,
+            "sha256": "356caee4986b64005f31d68e1491d85a9eeead4ef925404d852db182c0737e1b"
+        },
+        {
+            "key": "normalization",
+            "path": "results\\csv\\training_normalization.json",
+            "bytes": 493,
+            "sha256": "b0cd7750f470d78b4bebf86e0bb622e17809b17051bdd4346740b2788c14a9ca"
+        }
+    ],
+    "excluded_from_headline_tables": [
+        "results/csv/validation_interpolation.csv (separate 0056 comb-10% interpolation run; not the primary random-5% condition)",
+        "results/csv/latency_benchmark.csv (single-run diagnostic latency)",
+        "results/csv/latency_benchmark.json (single-run diagnostic latency)",
+        "results/csv/scaleformer_seed42_bs4_smoke_summary.json",
+        "results/csv/scaleformer_seed42_bs4_smoke_training.csv",
+        "per-epoch training CSVs are provenance/supporting artifacts rather than headline paper tables"
+    ],
+    "repository_housekeeping_review": [
+        "scripts/train_frequency_transformer1.py appears to be a duplicate/alternate trainer and should be manually reviewed before deletion; this script does not modify source files."
+    ]
+}

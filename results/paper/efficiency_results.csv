@@ -1,0 +1,5 @@
+method,parameters,core_mmacs,approximate_gflops,peak_gpu_memory_mib,e2e_latency_mean_ms,e2e_latency_sd_ms
+Linear interpolation,0,,,1.7222,1.2866,0.5674
+Residual Frequency CNN,60160,60.8829,0.1218,2.0762,3.0208,1.3494
+Full-Attention Transformer,108928,511.7706,1.0235,12.2124,3.0617,0.2088
+SCALE-Former,100034,1256.1285,2.5123,40.1797,12.3771,0.1562

@@ -1,0 +1,70 @@
+[
+    {
+        "variant": "full",
+        "display_name": "Full SCALE-Former",
+        "parameters": 100034,
+        "num_seeds": 3,
+        "seeds": [
+            7,
+            42,
+            123
+        ],
+        "full_nmse_db_mean": -30.710046420357425,
+        "full_nmse_db_std": 0.08369402618737343,
+        "missing_nmse_db_mean": -30.48793866417382,
+        "missing_nmse_db_std": 0.08369402618737423,
+        "degradation_vs_full_db": 0.0,
+        "gain_vs_interpolation_db": 4.904038664173822
+    },
+    {
+        "variant": "no_global",
+        "display_name": "No Global",
+        "parameters": 23090,
+        "num_seeds": 3,
+        "seeds": [
+            7,
+            42,
+            123
+        ],
+        "full_nmse_db_mean": -26.771868196072344,
+        "full_nmse_db_std": 0.038178022455658295,
+        "missing_nmse_db_mean": -26.54976043988874,
+        "missing_nmse_db_std": 0.03817802245565751,
+        "degradation_vs_full_db": 3.938178224285082,
+        "gain_vs_interpolation_db": 0.9658604398887398
+    },
+    {
+        "variant": "no_local",
+        "display_name": "No Local",
+        "parameters": 82178,
+        "num_seeds": 3,
+        "seeds": [
+            7,
+            42,
+            123
+        ],
+        "full_nmse_db_mean": -26.133990301267435,
+        "full_nmse_db_std": 0.08763168483101044,
+        "missing_nmse_db_mean": -25.911882545083834,
+        "missing_nmse_db_std": 0.08763168483101066,
+        "degradation_vs_full_db": 4.576056119089987,
+        "gain_vs_interpolation_db": 0.3279825450838345
+    },
+    {
+        "variant": "no_coordinates",
+        "display_name": "No Coordinates",
+        "parameters": 97538,
+        "num_seeds": 3,
+        "seeds": [
+            7,
+            42,
+            123
+        ],
+        "full_nmse_db_mean": -27.46883831546939,
+        "full_nmse_db_std": 0.21086614468153775,
+        "missing_nmse_db_mean": -27.246730559285787,
+        "missing_nmse_db_std": 0.21086614468153955,
+        "degradation_vs_full_db": 3.2412081048880346,
+        "gain_vs_interpolation_db": 1.662830559285787
+    }
+]
