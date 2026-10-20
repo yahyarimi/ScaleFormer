@@ -1,0 +1,49 @@
+{
+    "sources": [
+        {
+            "key": "primary",
+            "path": "results\\paper\\primary_results.csv",
+            "sha256": "421da2cbcef9d243645a9c079d06b0d36454a917ed76bcbc9b044e8985ae288e"
+        },
+        {
+            "key": "efficiency",
+            "path": "results\\paper\\efficiency_results.csv",
+            "sha256": "6e62bf3b2bea59d4a05cb4a18c42d52a296b23e59d7c2556908d6dcc3ce3f7a1"
+        },
+        {
+            "key": "robustness",
+            "path": "results\\paper\\robustness_results.csv",
+            "sha256": "59e8269413ee8117a4a5f2819bfa00ae0f93340ee3e80ba7fe698fcba8c0148c"
+        },
+        {
+            "key": "scalability",
+            "path": "results\\paper\\scalability_results.csv",
+            "sha256": "fbd9ef6689814b31089cb323fe928efc1d978a5af914893645b0b79ca5381faf"
+        },
+        {
+            "key": "ablation",
+            "path": "results\\paper\\ablation_results.csv",
+            "sha256": "b47f5ac8064faa06b4f5fb766d180c05bee5a438b95bfd15849c951317985117"
+        }
+    ],
+    "generated_files": [
+        "results\\paper\\figures\\fig02_primary_test_comparison.png",
+        "results\\paper\\figures\\fig02_primary_test_comparison.pdf",
+        "results\\paper\\figures\\fig03a_random_density_robustness.png",
+        "results\\paper\\figures\\fig03a_random_density_robustness.pdf",
+        "results\\paper\\figures\\fig03b_mask_pattern_robustness.png",
+        "results\\paper\\figures\\fig03b_mask_pattern_robustness.pdf",
+        "results\\paper\\figures\\fig04_scalability.png",
+        "results\\paper\\figures\\fig04_scalability.pdf",
+        "results\\paper\\figures\\fig05_ablation.png",
+        "results\\paper\\figures\\fig05_ablation.pdf",
+        "results\\paper\\figures\\fig06_accuracy_efficiency.png",
+        "results\\paper\\figures\\fig06_accuracy_efficiency.pdf"
+    ],
+    "notes": [
+        "All figures are generated from audited results/paper CSV files.",
+        "PNG outputs are saved at 600 dpi; PDF outputs are vector graphics.",
+        "The block-mask result is an out-of-distribution stress test.",
+        "The accuracy-efficiency plot uses the authoritative five-round E2E latency summary."
+    ]
+}
