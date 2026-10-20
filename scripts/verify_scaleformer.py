@@ -633,7 +633,7 @@ def main():
 
     output_path = Path(
         "results/csv/"
-        "scaleformer_seed42_bs4_verification.json"
+        f"{checkpoint_path.stem}_verification.json"
     )
 
     with output_path.open(

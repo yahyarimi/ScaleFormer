@@ -1,0 +1,17 @@
+{
+    "checkpoint": "checkpoints\\scaleformer_seed7_bs4_best.pt",
+    "validation_run": "0056",
+    "pattern": "random",
+    "requested_density": 0.05,
+    "observed_subcarriers": 51,
+    "num_samples": 5220,
+    "interpolation_full_nmse_db": -25.805978451634974,
+    "interpolation_missing_nmse_db": -25.583870695451377,
+    "scaleformer_full_nmse_db": -30.65176564422291,
+    "scaleformer_missing_nmse_db": -30.429657888039312,
+    "saved_full_nmse_db": -30.651765970868755,
+    "saved_missing_nmse_db": -30.429658214685155,
+    "maximum_observed_error": 0.0,
+    "peak_inference_gpu_memory_mb": 260.9296875,
+    "evaluation_seconds": 49.51408190000075
+}
