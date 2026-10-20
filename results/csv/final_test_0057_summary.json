@@ -1,0 +1,85 @@
+{
+    "protocol": {
+        "test_run": "0057",
+        "num_test_samples": 5001,
+        "pattern": "random",
+        "requested_density": 0.05,
+        "observed_subcarriers": 51,
+        "mask_seed": 42,
+        "training_seeds": [
+            7,
+            42,
+            123
+        ],
+        "normalization": "training-set statistics only",
+        "retraining": false,
+        "hyperparameter_tuning": false
+    },
+    "per_seed": [
+        {
+            "seed": 7,
+            "cnn_full_nmse_db": -26.328933523577582,
+            "cnn_missing_nmse_db": -26.10666945131754,
+            "scaleformer_full_nmse_db": -30.331615054026546,
+            "scaleformer_missing_nmse_db": -30.109350981766497,
+            "scaleformer_gain_vs_cnn_missing_db": 4.002681530448957,
+            "cnn_max_observed_error": 0.0,
+            "scaleformer_max_observed_error": 0.0
+        },
+        {
+            "seed": 42,
+            "cnn_full_nmse_db": -26.271192283863872,
+            "cnn_missing_nmse_db": -26.04892821160383,
+            "scaleformer_full_nmse_db": -30.399131778217704,
+            "scaleformer_missing_nmse_db": -30.17686770595766,
+            "scaleformer_gain_vs_cnn_missing_db": 4.127939494353832,
+            "cnn_max_observed_error": 0.0,
+            "scaleformer_max_observed_error": 0.0
+        },
+        {
+            "seed": 123,
+            "cnn_full_nmse_db": -26.25892701577544,
+            "cnn_missing_nmse_db": -26.036662943515395,
+            "scaleformer_full_nmse_db": -30.48565290255933,
+            "scaleformer_missing_nmse_db": -30.263388830299288,
+            "scaleformer_gain_vs_cnn_missing_db": 4.226725886783893,
+            "cnn_max_observed_error": 0.0,
+            "scaleformer_max_observed_error": 0.0
+        }
+    ],
+    "summary": [
+        {
+            "method": "Linear interpolation",
+            "num_training_seeds": 0,
+            "full_nmse_db_mean": -25.754476015443856,
+            "full_nmse_db_std": null,
+            "missing_nmse_db_mean": -25.532211943183807,
+            "missing_nmse_db_std": null,
+            "gain_vs_interpolation_missing_db": 0.0
+        },
+        {
+            "method": "Residual Frequency CNN",
+            "num_training_seeds": 3,
+            "full_nmse_db_mean": -26.2863509410723,
+            "full_nmse_db_std": 0.0373840400429748,
+            "missing_nmse_db_mean": -26.064086868812254,
+            "missing_nmse_db_std": 0.0373840400429761,
+            "gain_vs_interpolation_missing_db": 0.531874925628447
+        },
+        {
+            "method": "SCALE-Former",
+            "num_training_seeds": 3,
+            "full_nmse_db_mean": -30.40546657826786,
+            "full_nmse_db_std": 0.07721406584236344,
+            "missing_nmse_db_mean": -30.183202506007817,
+            "missing_nmse_db_std": 0.07721406584236684,
+            "gain_vs_interpolation_missing_db": 4.65099056282401
+        }
+    ],
+    "scaleformer_vs_cnn": {
+        "missing_nmse_gain_db": 4.119115637195563,
+        "linear_nmse_ratio": 2.5817344132042503,
+        "linear_nmse_reduction_percent": 61.26634889764371
+    },
+    "evaluation_seconds": 126.99282870002207
+}
