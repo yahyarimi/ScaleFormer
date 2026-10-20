@@ -1,0 +1,45 @@
+{
+    "num_rounds": 5,
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "results": [
+        {
+            "method": "Linear interpolation",
+            "rounds": 5,
+            "parameters": 0,
+            "e2e_median_mean_ms": 1.5712992310523988,
+            "e2e_median_std_ms": 0.8615183843157845,
+            "e2e_median_min_ms": 0.8685440123081207,
+            "e2e_median_max_ms": 2.800640106201172,
+            "e2e_p95_mean_ms": 2.579865550994873,
+            "e2e_p95_std_ms": 1.075971725834368,
+            "model_median_mean_ms": null,
+            "model_median_std_ms": null
+        },
+        {
+            "method": "Residual Frequency CNN",
+            "rounds": 5,
+            "parameters": 60160,
+            "e2e_median_mean_ms": 4.02032961845398,
+            "e2e_median_std_ms": 1.845455273105415,
+            "e2e_median_min_ms": 2.485743999481201,
+            "e2e_median_max_ms": 6.518784046173096,
+            "e2e_p95_mean_ms": 6.914457702636719,
+            "e2e_p95_std_ms": 1.235633786127163,
+            "model_median_mean_ms": 2.3800640225410463,
+            "model_median_std_ms": 1.1515321590412682
+        },
+        {
+            "method": "SCALE-Former",
+            "rounds": 5,
+            "parameters": 100034,
+            "e2e_median_mean_ms": 12.890262413024903,
+            "e2e_median_std_ms": 1.0805055972039699,
+            "e2e_median_min_ms": 12.22155237197876,
+            "e2e_median_max_ms": 14.81163215637207,
+            "e2e_p95_mean_ms": 22.217344284057617,
+            "e2e_p95_std_ms": 7.28592370081356,
+            "model_median_mean_ms": 11.80508804321289,
+            "model_median_std_ms": 0.8638215327343617
+        }
+    ]
+}
