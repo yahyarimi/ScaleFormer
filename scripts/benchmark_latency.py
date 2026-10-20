@@ -14,6 +14,9 @@ from scripts.benchmark_complexity import (
     load_validation_example,
 )
 
+from src.models.frequency_transformer_baseline import (
+    FrequencyTransformerBaseline,
+)
 from src.models.interpolation import (
     frequency_linear_interpolate,
 )
@@ -34,13 +37,128 @@ JSON_OUTPUT = (
 WARMUP_PAIRS = 100
 MEASURED_PAIRS = 500
 
+FREQUENCY_TRANSFORMER_CHECKPOINT = Path(
+    "checkpoints/"
+    "frequency_transformer_seed42_bs4_best.pt"
+)
+
+EXPECTED_FREQUENCY_TRANSFORMER_PARAMS = 108_928
+
+
+def load_frequency_transformer(
+    device: torch.device,
+):
+    """
+    Load the frozen seed-42 full-attention Transformer checkpoint
+    for controlled inference benchmarking.
+
+    Seed 42 is used only as a representative frozen checkpoint for
+    architecture/efficiency benchmarking. Parameter count and
+    architecture metadata are verified before inference.
+    """
+
+    if not FREQUENCY_TRANSFORMER_CHECKPOINT.exists():
+        raise FileNotFoundError(
+            FREQUENCY_TRANSFORMER_CHECKPOINT
+        )
+
+    checkpoint = torch.load(
+        FREQUENCY_TRANSFORMER_CHECKPOINT,
+        map_location="cpu",
+        weights_only=False,
+    )
+
+    architecture = checkpoint[
+        "architecture"
+    ]
+
+    model = FrequencyTransformerBaseline(
+        num_antennas=int(
+            architecture[
+                "num_antennas"
+            ]
+        ),
+        dim=int(
+            architecture[
+                "dim"
+            ]
+        ),
+        num_heads=int(
+            architecture[
+                "heads"
+            ]
+        ),
+        num_layers=int(
+            architecture[
+                "layers"
+            ]
+        ),
+        ff_dim=int(
+            architecture[
+                "ff_dim"
+            ]
+        ),
+        dropout=float(
+            architecture[
+                "dropout"
+            ]
+        ),
+    )
+
+    parameters = sum(
+        parameter.numel()
+        for parameter in model.parameters()
+        if parameter.requires_grad
+    )
+
+    if (
+        parameters
+        != EXPECTED_FREQUENCY_TRANSFORMER_PARAMS
+    ):
+        raise RuntimeError(
+            "Unexpected full-attention Transformer "
+            f"parameter count: {parameters:,}; "
+            "expected "
+            f"{EXPECTED_FREQUENCY_TRANSFORMER_PARAMS:,}."
+        )
+
+    checkpoint_parameters = int(
+        checkpoint[
+            "num_parameters"
+        ]
+    )
+
+    if checkpoint_parameters != parameters:
+        raise RuntimeError(
+            "Full-attention Transformer checkpoint "
+            "parameter count does not match the "
+            "reconstructed model."
+        )
+
+    model.load_state_dict(
+        checkpoint[
+            "model_state_dict"
+        ],
+        strict=True,
+    )
+
+    model = model.to(
+        device
+    )
+
+    model.eval()
+
+    return model, parameters
+
 
 def percentile(
     values: list[float],
     fraction: float,
 ) -> float:
 
-    ordered = sorted(values)
+    ordered = sorted(
+        values
+    )
 
     index = int(
         fraction
@@ -50,7 +168,9 @@ def percentile(
         )
     )
 
-    return ordered[index]
+    return ordered[
+        index
+    ]
 
 
 def summarize(
@@ -173,7 +293,7 @@ def benchmark_interpolation(
     print(
         f"Mean   : "
         f"{stats['mean_ms']:.4f} "
-        f"± {stats['std_ms']:.4f} ms"
+        f"+/- {stats['std_ms']:.4f} ms"
     )
 
     print(
@@ -249,8 +369,6 @@ def benchmark_learned_model(
 
     torch.cuda.synchronize()
 
-    # Verify that recomputing interpolation gives
-    # exactly the same tensor properties.
     probe = (
         frequency_linear_interpolate(
             observed,
@@ -324,13 +442,6 @@ def benchmark_learned_model(
                 mask,
             )
 
-    # --------------------------------------------------------
-    # Paired warm-up
-    #
-    # Alternate order so neither path systematically benefits
-    # from being measured after the other.
-    # --------------------------------------------------------
-
     with torch.inference_mode():
 
         for index in range(
@@ -351,10 +462,6 @@ def benchmark_learned_model(
 
         model_times = []
         e2e_times = []
-
-        # ----------------------------------------------------
-        # Paired/interleaved measurements
-        # ----------------------------------------------------
 
         for index in range(
             MEASURED_PAIRS
@@ -414,7 +521,7 @@ def benchmark_learned_model(
     print(
         f"Model-only mean     : "
         f"{model_stats['mean_ms']:.4f} "
-        f"± "
+        f"+/- "
         f"{model_stats['std_ms']:.4f} ms"
     )
 
@@ -431,7 +538,7 @@ def benchmark_learned_model(
     print(
         f"End-to-end mean     : "
         f"{e2e_stats['mean_ms']:.4f} "
-        f"± "
+        f"+/- "
         f"{e2e_stats['std_ms']:.4f} ms"
     )
 
@@ -585,6 +692,9 @@ def save_results(
             "interpolation_precision": (
                 "FP32"
             ),
+            "representative_checkpoint_seed": (
+                42
+            ),
         },
         "results": rows,
     }
@@ -649,10 +759,6 @@ def main():
 
     rows = []
 
-    # --------------------------------------------------------
-    # Interpolation
-    # --------------------------------------------------------
-
     cleanup_cuda()
 
     rows.append(
@@ -661,10 +767,6 @@ def main():
             mask,
         )
     )
-
-    # --------------------------------------------------------
-    # CNN
-    # --------------------------------------------------------
 
     cleanup_cuda()
 
@@ -690,9 +792,28 @@ def main():
 
     cleanup_cuda()
 
-    # --------------------------------------------------------
-    # SCALE-Former
-    # --------------------------------------------------------
+    (
+        transformer,
+        transformer_params,
+    ) = load_frequency_transformer(
+        device
+    )
+
+    rows.append(
+        benchmark_learned_model(
+            name=(
+                "Full-Attention Transformer"
+            ),
+            model=transformer,
+            parameters=transformer_params,
+            observed=observed,
+            mask=mask,
+        )
+    )
+
+    del transformer
+
+    cleanup_cuda()
 
     scaleformer, sf_params = (
         load_scaleformer(
@@ -724,7 +845,7 @@ def main():
     )
 
     print(
-        "AUTHORITATIVE LATENCY SUMMARY"
+        "SINGLE-RUN LATENCY SUMMARY"
     )
 
     print(
@@ -732,7 +853,7 @@ def main():
     )
 
     print(
-        f"{'Method':<28}"
+        f"{'Method':<30}"
         f"{'Params':>12}"
         f"{'Model median':>20}"
         f"{'E2E median':>20}"
@@ -752,7 +873,7 @@ def main():
             is None
         ):
 
-            model_text = "—"
+            model_text = "-"
 
         else:
 
@@ -761,7 +882,7 @@ def main():
             )
 
         print(
-            f"{row['method']:<28}"
+            f"{row['method']:<30}"
             f"{row['parameters']:>12,}"
             f"{model_text:>20}"
             f"{row['end_to_end_median_ms']:>17.4f} ms"
@@ -771,7 +892,13 @@ def main():
     print()
 
     print(
-        f"CSV:"
+        "NOTE: publication latency should use the "
+        "repeated benchmark summary, not this "
+        "single-run output."
+    )
+
+    print(
+        f"\nCSV:"
         f"\n{CSV_OUTPUT}"
     )
 

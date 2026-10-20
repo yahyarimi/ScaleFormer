@@ -2,6 +2,7 @@
     "scope": "Model-only MACs at batch size 1 for a 32x1024 CSI grid. Linear/Conv MACs and explicit MultiheadAttention Q/K/V projection, QK^T, attention-V, and output-projection MACs are counted. Interpolation, LayerNorm, softmax, activation functions, mask/index operations and other elementwise operations are excluded.",
     "mac_convention": "One multiply-accumulate = one MAC.",
     "flop_convention": "Approximate FLOPs = 2 x MACs.",
+    "representative_checkpoint_seed": 42,
     "results": [
         {
             "method": "Residual Frequency CNN",
@@ -13,6 +14,24 @@
             "attention_calls": 0,
             "breakdown": {
                 "conv1d": 60882944
+            }
+        },
+        {
+            "method": "Full-Attention Transformer",
+            "parameters": 108928,
+            "total_macs": 511770624,
+            "mmacs": 511.770624,
+            "approximate_flops": 1023541248,
+            "approximate_gflops": 1.023541248,
+            "attention_calls": 3,
+            "breakdown": {
+                "linear": 58785792,
+                "attention_q_projection": 12582912,
+                "attention_k_projection": 12582912,
+                "attention_v_projection": 12582912,
+                "attention_qk": 201326592,
+                "attention_av": 201326592,
+                "attention_output_projection": 12582912
             }
         },
         {

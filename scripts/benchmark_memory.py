@@ -16,6 +16,10 @@ from scripts.benchmark_complexity import (
     measure_peak_memory,
 )
 
+from scripts.benchmark_latency import (
+    load_frequency_transformer,
+)
+
 from src.models.interpolation import (
     frequency_linear_interpolate,
 )
@@ -237,6 +241,61 @@ def main():
     cleanup_cuda()
 
     # ========================================================
+    # Full-attention Transformer
+    # ========================================================
+
+    (
+        transformer,
+        transformer_params,
+    ) = load_frequency_transformer(
+        device
+    )
+
+    print(
+        "\nFULL-ATTENTION TRANSFORMER"
+    )
+
+    def transformer_end_to_end():
+
+        interpolated = (
+            frequency_linear_interpolate(
+                observed,
+                mask,
+            )
+        )
+
+        with torch.amp.autocast(
+            device_type="cuda",
+            dtype=torch.float16,
+            enabled=True,
+        ):
+
+            return transformer(
+                interpolated,
+                mask,
+            )
+
+    result = measure_repeated(
+        transformer_end_to_end
+    )
+
+    rows.append(
+        {
+            "method": (
+                "Full-Attention Transformer"
+            ),
+            "parameters": (
+                transformer_params
+            ),
+            **result,
+        }
+    )
+
+    del transformer
+    gc.collect()
+    cleanup_cuda()
+
+    # ========================================================
     # SCALE-Former
     # ========================================================
 
@@ -291,10 +350,6 @@ def main():
     gc.collect()
     cleanup_cuda()
 
-    # ========================================================
-    # Save
-    # ========================================================
-
     RESULT_ROOT.mkdir(
         parents=True,
         exist_ok=True,
@@ -342,6 +397,9 @@ def main():
                 "torch.cuda."
                 "max_memory_allocated"
             ),
+            "representative_checkpoint_seed": (
+                42
+            ),
         },
         "results": rows,
     }
@@ -359,7 +417,7 @@ def main():
 
     print(
         "\n"
-        + "=" * 100
+        + "=" * 110
     )
 
     print(
@@ -367,11 +425,11 @@ def main():
     )
 
     print(
-        "=" * 100
+        "=" * 110
     )
 
     print(
-        f"{'Method':<28}"
+        f"{'Method':<30}"
         f"{'Params':>12}"
         f"{'Peak mean':>18}"
         f"{'SD':>14}"
@@ -379,13 +437,13 @@ def main():
     )
 
     print(
-        "-" * 100
+        "-" * 110
     )
 
     for row in rows:
 
         print(
-            f"{row['method']:<28}"
+            f"{row['method']:<30}"
             f"{row['parameters']:>12,}"
             f"{row['peak_mean_mib']:>14.4f} MiB"
             f"{row['peak_std_mib']:>10.4f}"
@@ -402,7 +460,7 @@ def main():
         f"\n{JSON_OUTPUT}"
     )
 
-    print("=" * 100)
+    print("=" * 110)
 
 
 if __name__ == "__main__":

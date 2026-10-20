@@ -1,17 +1,69 @@
 {
     "num_rounds": 5,
     "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "protocol": {
+        "batch_size": 1,
+        "grid_antennas": 32,
+        "grid_subcarriers": 1024,
+        "observed_subcarriers": 51,
+        "observation_density": 0.05,
+        "warmup_pairs_per_round": 100,
+        "measured_pairs_per_round": 500,
+        "learned_precision": "AMP FP16",
+        "interpolation_precision": "FP32",
+        "representative_checkpoint_seed": 42,
+        "learned_model_orders": [
+            [
+                "cnn",
+                "transformer",
+                "scaleformer"
+            ],
+            [
+                "transformer",
+                "scaleformer",
+                "cnn"
+            ],
+            [
+                "scaleformer",
+                "cnn",
+                "transformer"
+            ],
+            [
+                "scaleformer",
+                "transformer",
+                "cnn"
+            ],
+            [
+                "transformer",
+                "cnn",
+                "scaleformer"
+            ]
+        ]
+    },
     "results": [
+        {
+            "method": "Full-Attention Transformer",
+            "rounds": 5,
+            "parameters": 108928,
+            "e2e_median_mean_ms": 3.0616959810256956,
+            "e2e_median_std_ms": 0.20879619703140118,
+            "e2e_median_min_ms": 2.9291518926620483,
+            "e2e_median_max_ms": 3.4294720888137817,
+            "e2e_p95_mean_ms": 5.05752968788147,
+            "e2e_p95_std_ms": 1.245402099252415,
+            "model_median_mean_ms": 2.0340224385261534,
+            "model_median_std_ms": 0.09001388590977129
+        },
         {
             "method": "Linear interpolation",
             "rounds": 5,
             "parameters": 0,
-            "e2e_median_mean_ms": 1.5712992310523988,
-            "e2e_median_std_ms": 0.8615183843157845,
-            "e2e_median_min_ms": 0.8685440123081207,
-            "e2e_median_max_ms": 2.800640106201172,
-            "e2e_p95_mean_ms": 2.579865550994873,
-            "e2e_p95_std_ms": 1.075971725834368,
+            "e2e_median_mean_ms": 1.2865504026412964,
+            "e2e_median_std_ms": 0.5673826930196011,
+            "e2e_median_min_ms": 0.8837119936943054,
+            "e2e_median_max_ms": 2.18777596950531,
+            "e2e_p95_mean_ms": 2.389567995071411,
+            "e2e_p95_std_ms": 1.356073565915291,
             "model_median_mean_ms": null,
             "model_median_std_ms": null
         },
@@ -19,27 +71,27 @@
             "method": "Residual Frequency CNN",
             "rounds": 5,
             "parameters": 60160,
-            "e2e_median_mean_ms": 4.02032961845398,
-            "e2e_median_std_ms": 1.845455273105415,
-            "e2e_median_min_ms": 2.485743999481201,
-            "e2e_median_max_ms": 6.518784046173096,
-            "e2e_p95_mean_ms": 6.914457702636719,
-            "e2e_p95_std_ms": 1.235633786127163,
-            "model_median_mean_ms": 2.3800640225410463,
-            "model_median_std_ms": 1.1515321590412682
+            "e2e_median_mean_ms": 3.020796799659729,
+            "e2e_median_std_ms": 1.349419316048581,
+            "e2e_median_min_ms": 2.329424023628235,
+            "e2e_median_max_ms": 5.432255983352661,
+            "e2e_p95_mean_ms": 5.501670265197754,
+            "e2e_p95_std_ms": 2.186800767851215,
+            "model_median_mean_ms": 1.830502414703369,
+            "model_median_std_ms": 0.8774606237111666
         },
         {
             "method": "SCALE-Former",
             "rounds": 5,
             "parameters": 100034,
-            "e2e_median_mean_ms": 12.890262413024903,
-            "e2e_median_std_ms": 1.0805055972039699,
-            "e2e_median_min_ms": 12.22155237197876,
-            "e2e_median_max_ms": 14.81163215637207,
-            "e2e_p95_mean_ms": 22.217344284057617,
-            "e2e_p95_std_ms": 7.28592370081356,
-            "model_median_mean_ms": 11.80508804321289,
-            "model_median_std_ms": 0.8638215327343617
+            "e2e_median_mean_ms": 12.377078342437745,
+            "e2e_median_std_ms": 0.1561505804288782,
+            "e2e_median_min_ms": 12.16974401473999,
+            "e2e_median_max_ms": 12.604799747467041,
+            "e2e_p95_mean_ms": 19.127206802368164,
+            "e2e_p95_std_ms": 4.0486290670949865,
+            "model_median_mean_ms": 11.371907329559326,
+            "model_median_std_ms": 0.14790208192129223
         }
     ]
 }

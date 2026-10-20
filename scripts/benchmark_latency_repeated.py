@@ -18,6 +18,7 @@ from scripts.benchmark_complexity import (
 from scripts.benchmark_latency import (
     benchmark_interpolation,
     benchmark_learned_model,
+    load_frequency_transformer,
 )
 
 
@@ -39,6 +40,39 @@ SUMMARY_JSON = (
     RESULT_ROOT
     / "latency_repeated_summary.json"
 )
+
+
+# Predeclared learned-model order for each round.
+# With three learned models and five rounds, exact position
+# balance is impossible, but this schedule distributes first,
+# middle, and last positions without keeping one model fixed.
+ROUND_MODEL_ORDERS = [
+    [
+        "cnn",
+        "transformer",
+        "scaleformer",
+    ],
+    [
+        "transformer",
+        "scaleformer",
+        "cnn",
+    ],
+    [
+        "scaleformer",
+        "cnn",
+        "transformer",
+    ],
+    [
+        "scaleformer",
+        "transformer",
+        "cnn",
+    ],
+    [
+        "transformer",
+        "cnn",
+        "scaleformer",
+    ],
+]
 
 
 def aggregate(
@@ -189,6 +223,60 @@ def save_csv(
         )
 
 
+def load_named_model(
+    model_name: str,
+    device: torch.device,
+):
+
+    if model_name == "cnn":
+
+        model, params = (
+            load_cnn(
+                device
+            )
+        )
+
+        display_name = (
+            "Residual Frequency CNN"
+        )
+
+    elif model_name == "transformer":
+
+        model, params = (
+            load_frequency_transformer(
+                device
+            )
+        )
+
+        display_name = (
+            "Full-Attention Transformer"
+        )
+
+    elif model_name == "scaleformer":
+
+        model, params = (
+            load_scaleformer(
+                device
+            )
+        )
+
+        display_name = (
+            "SCALE-Former"
+        )
+
+    else:
+
+        raise ValueError(
+            f"Unknown model name: {model_name}"
+        )
+
+    return (
+        model,
+        params,
+        display_name,
+    )
+
+
 def main():
 
     print(
@@ -223,10 +311,20 @@ def main():
         f"{NUM_ROUNDS}"
     )
 
-    observed, mask, _ = (
+    observed, mask, observed_count = (
         load_validation_example(
             device
         )
+    )
+
+    print(
+        f"Grid   : "
+        f"{tuple(observed.shape)}"
+    )
+
+    print(
+        f"Observed frequencies: "
+        f"{observed_count}"
     )
 
     all_rows = []
@@ -251,10 +349,6 @@ def main():
             "#" * 100
         )
 
-        # ----------------------------------------------------
-        # Interpolation
-        # ----------------------------------------------------
-
         cleanup_cuda()
 
         interpolation_row = (
@@ -268,61 +362,49 @@ def main():
             "round"
         ] = round_index
 
+        interpolation_row[
+            "order_position"
+        ] = 0
+
         all_rows.append(
             interpolation_row
         )
 
-        # Alternate learned-model order across rounds
-        # to reduce systematic thermal / clock bias.
-        if (
-            round_index
-            % 2
-            == 1
+        model_order = (
+            ROUND_MODEL_ORDERS[
+                round_index - 1
+            ]
+        )
+
+        print(
+            "Learned-model order: "
+            + " -> ".join(
+                model_order
+            )
+        )
+
+        for (
+            order_position,
+            model_name,
+        ) in enumerate(
+            model_order,
+            start=1,
         ):
-
-            model_order = [
-                "cnn",
-                "scaleformer",
-            ]
-
-        else:
-
-            model_order = [
-                "scaleformer",
-                "cnn",
-            ]
-
-        for model_name in model_order:
 
             cleanup_cuda()
 
-            if model_name == "cnn":
-
-                model, params = (
-                    load_cnn(
-                        device
-                    )
-                )
-
-                name = (
-                    "Residual Frequency CNN"
-                )
-
-            else:
-
-                model, params = (
-                    load_scaleformer(
-                        device
-                    )
-                )
-
-                name = (
-                    "SCALE-Former"
-                )
+            (
+                model,
+                params,
+                display_name,
+            ) = load_named_model(
+                model_name,
+                device,
+            )
 
             row = (
                 benchmark_learned_model(
-                    name=name,
+                    name=display_name,
                     model=model,
                     parameters=params,
                     observed=observed,
@@ -333,6 +415,10 @@ def main():
             row[
                 "round"
             ] = round_index
+
+            row[
+                "order_position"
+            ] = order_position
 
             all_rows.append(
                 row
@@ -368,6 +454,27 @@ def main():
                 0
             )
         ),
+        "protocol": {
+            "batch_size": 1,
+            "grid_antennas": 32,
+            "grid_subcarriers": 1024,
+            "observed_subcarriers": (
+                observed_count
+            ),
+            "observation_density": 0.05,
+            "warmup_pairs_per_round": 100,
+            "measured_pairs_per_round": 500,
+            "learned_precision": (
+                "AMP FP16"
+            ),
+            "interpolation_precision": (
+                "FP32"
+            ),
+            "representative_checkpoint_seed": 42,
+            "learned_model_orders": (
+                ROUND_MODEL_ORDERS
+            ),
+        },
         "results": (
             summary_rows
         ),
@@ -386,7 +493,7 @@ def main():
 
     print(
         "\n"
-        + "=" * 110
+        + "=" * 120
     )
 
     print(
@@ -394,11 +501,11 @@ def main():
     )
 
     print(
-        "=" * 110
+        "=" * 120
     )
 
     print(
-        f"{'Method':<28}"
+        f"{'Method':<30}"
         f"{'Params':>12}"
         f"{'E2E median mean':>22}"
         f"{'Across-run SD':>18}"
@@ -407,13 +514,13 @@ def main():
     )
 
     print(
-        "-" * 110
+        "-" * 120
     )
 
     for row in summary_rows:
 
         print(
-            f"{row['method']:<28}"
+            f"{row['method']:<30}"
             f"{row['parameters']:>12,}"
             f"{row['e2e_median_mean_ms']:>18.4f} ms"
             f"{row['e2e_median_std_ms']:>14.4f} ms"
@@ -439,7 +546,7 @@ def main():
     )
 
     print(
-        "=" * 110
+        "=" * 120
     )
 
 

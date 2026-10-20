@@ -1,4 +1,5 @@
 method,parameters,peak_mean_mib,peak_std_mib,peak_max_mib,incremental_peak_mean_mib
 Linear interpolation,0,1.72216796875,0.0,1.72216796875,1.34716796875
 Residual Frequency CNN,60160,2.076171875,0.0,2.076171875,1.4677734375
-SCALE-Former,100034,41.0546875,0.0,41.0546875,30.28125
+Full-Attention Transformer,108928,12.21240234375,0.0,12.21240234375,2.29052734375
+SCALE-Former,100034,40.1796875,0.0,40.1796875,30.28125

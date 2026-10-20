@@ -15,6 +15,10 @@ from scripts.benchmark_complexity import (
     load_validation_example,
 )
 
+from scripts.benchmark_latency import (
+    load_frequency_transformer,
+)
+
 from src.models.interpolation import (
     frequency_linear_interpolate,
 )
@@ -39,16 +43,14 @@ class MACCounter:
 
         self.total_macs = 0
 
-        self.breakdown = defaultdict(int)
+        self.breakdown = defaultdict(
+            int
+        )
 
         self.handles = []
 
         self.attention_calls = 0
 
-        # Standard MultiheadAttention uses an out_proj
-        # Linear object, but normally calls it through
-        # torch.nn.functional rather than its module
-        # forward. We count it explicitly in the MHA hook.
         self.mha_out_proj_ids = set()
 
     def add(
@@ -57,7 +59,9 @@ class MACCounter:
         macs: int,
     ):
 
-        macs = int(macs)
+        macs = int(
+            macs
+        )
 
         self.breakdown[
             category
@@ -73,8 +77,10 @@ class MACCounter:
         output,
     ):
 
-        # Do not double-count an MHA output projection.
-        if id(module) in self.mha_out_proj_ids:
+        if (
+            id(module)
+            in self.mha_out_proj_ids
+        ):
             return
 
         if not isinstance(
@@ -83,8 +89,6 @@ class MACCounter:
         ):
             return
 
-        # One MAC for each input feature contributing
-        # to each output element.
         macs = (
             output.numel()
             * module.in_features
@@ -109,7 +113,11 @@ class MACCounter:
         ):
             return
 
-        kernel = module.kernel_size[0]
+        kernel = (
+            module.kernel_size[
+                0
+            ]
+        )
 
         input_channels_per_group = (
             module.in_channels
@@ -141,8 +149,17 @@ class MACCounter:
         ):
             return
 
-        kernel_h = module.kernel_size[0]
-        kernel_w = module.kernel_size[1]
+        kernel_h = (
+            module.kernel_size[
+                0
+            ]
+        )
+
+        kernel_w = (
+            module.kernel_size[
+                1
+            ]
+        )
 
         input_channels_per_group = (
             module.in_channels
@@ -175,15 +192,31 @@ class MACCounter:
 
         if batch_first:
 
-            batch = tensor.shape[0]
-            length = tensor.shape[1]
-            features = tensor.shape[2]
+            batch = tensor.shape[
+                0
+            ]
+
+            length = tensor.shape[
+                1
+            ]
+
+            features = tensor.shape[
+                2
+            ]
 
         else:
 
-            length = tensor.shape[0]
-            batch = tensor.shape[1]
-            features = tensor.shape[2]
+            length = tensor.shape[
+                0
+            ]
+
+            batch = tensor.shape[
+                1
+            ]
+
+            features = tensor.shape[
+                2
+            ]
 
         return (
             int(batch),
@@ -203,9 +236,17 @@ class MACCounter:
 
         if len(args) >= 3:
 
-            query = args[0]
-            key = args[1]
-            value = args[2]
+            query = args[
+                0
+            ]
+
+            key = args[
+                1
+            ]
+
+            value = args[
+                2
+            ]
 
         else:
 
@@ -226,6 +267,7 @@ class MACCounter:
             or key is None
             or value is None
         ):
+
             raise RuntimeError(
                 "Could not recover Q/K/V tensors "
                 "from MultiheadAttention."
@@ -263,23 +305,22 @@ class MACCounter:
             == batch_k
             == batch_v
         ):
+
             raise RuntimeError(
                 "Attention batch sizes differ."
             )
 
         if length_k != length_v:
+
             raise RuntimeError(
                 "Key/value sequence lengths differ."
             )
 
         batch = batch_q
+
         embed_dim = int(
             module.embed_dim
         )
-
-        # ----------------------------------------------------
-        # Q, K, V projections
-        # ----------------------------------------------------
 
         q_projection = (
             batch
@@ -302,15 +343,6 @@ class MACCounter:
             * embed_dim
         )
 
-        # ----------------------------------------------------
-        # Q K^T
-        #
-        # Across all heads:
-        # H * Lq * Lk * Dh
-        # =
-        # Lq * Lk * embed_dim
-        # ----------------------------------------------------
-
         qk_macs = (
             batch
             * length_q
@@ -318,20 +350,12 @@ class MACCounter:
             * embed_dim
         )
 
-        # ----------------------------------------------------
-        # Attention probabilities times V
-        # ----------------------------------------------------
-
         av_macs = (
             batch
             * length_q
             * length_k
             * embed_dim
         )
-
-        # ----------------------------------------------------
-        # Output projection
-        # ----------------------------------------------------
 
         output_projection = (
             batch
@@ -492,12 +516,12 @@ def count_model(
         model
     )
 
+    output = None
+
     try:
 
         with torch.inference_mode():
 
-            # MACs are shape-dependent, not precision-dependent.
-            # Use the same AMP path as inference.
             with torch.amp.autocast(
                 device_type="cuda",
                 dtype=torch.float16,
@@ -515,6 +539,12 @@ def count_model(
 
         counter.remove()
 
+    if output is None:
+
+        raise RuntimeError(
+            f"{name}: no output produced."
+        )
+
     if (
         output.shape
         != interpolated.shape
@@ -528,9 +558,6 @@ def count_model(
         counter.total_macs
     )
 
-    # Conventional approximation:
-    # one multiply-accumulate = two floating-point
-    # operations (one multiplication + one addition).
     approximate_flops = (
         2
         * total_macs
@@ -655,10 +682,6 @@ def main():
 
     results = []
 
-    # --------------------------------------------------------
-    # CNN
-    # --------------------------------------------------------
-
     cleanup_cuda()
 
     cnn, cnn_params = (
@@ -683,9 +706,46 @@ def main():
 
     cleanup_cuda()
 
-    # --------------------------------------------------------
-    # SCALE-Former
-    # --------------------------------------------------------
+    (
+        transformer,
+        transformer_params,
+    ) = load_frequency_transformer(
+        device
+    )
+
+    transformer_result = (
+        count_model(
+            name=(
+                "Full-Attention Transformer"
+            ),
+            model=transformer,
+            parameters=transformer_params,
+            interpolated=interpolated,
+            mask=mask,
+        )
+    )
+
+    if (
+        transformer_result[
+            "attention_calls"
+        ]
+        != 3
+    ):
+
+        raise RuntimeError(
+            "Expected exactly 3 self-attention "
+            "calls for the 3-layer full-attention "
+            "Transformer, but observed "
+            f"{transformer_result['attention_calls']}."
+        )
+
+    results.append(
+        transformer_result
+    )
+
+    del transformer
+
+    cleanup_cuda()
 
     (
         scaleformer,
@@ -786,6 +846,9 @@ def main():
         "flop_convention": (
             "Approximate FLOPs = 2 x MACs."
         ),
+        "representative_checkpoint_seed": (
+            42
+        ),
         "results": results,
     }
 
@@ -802,7 +865,7 @@ def main():
 
     print(
         "\n"
-        + "=" * 100
+        + "=" * 110
     )
 
     print(
@@ -810,7 +873,7 @@ def main():
     )
 
     print(
-        "=" * 100
+        "=" * 110
     )
 
     print(
@@ -821,7 +884,7 @@ def main():
     )
 
     print(
-        "-" * 100
+        "-" * 110
     )
 
     for result in results:
@@ -860,7 +923,7 @@ def main():
     )
 
     print(
-        "=" * 100
+        "=" * 110
     )
 
 
