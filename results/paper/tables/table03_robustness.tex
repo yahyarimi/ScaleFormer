@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\caption{Robustness to observation-density and pattern shifts on DICHASUS-0056.}
+\label{tab:robustness}
+\begin{tabular}{lrrr}
+\hline
+Condition & Interpolation missing NMSE (dB) & SCALE-Former missing NMSE (dB) & Gain (dB) \\
+\hline
+Random 1\% & -10.1329 & -11.3937 $\pm$ 0.2016 & +1.2607 \\
+Random 2\% & -16.2443 & -18.9724 $\pm$ 0.2121 & +2.7281 \\
+Random 5\% & -25.5839 & -30.4879 $\pm$ 0.0837 & +4.9041 \\
+Random 10\% & -30.8066 & -34.4184 $\pm$ 0.3421 & +3.6117 \\
+Random 20\% & -33.7906 & -34.8579 $\pm$ 0.4516 & +1.0673 \\
+Comb 5\% & -32.1195 & -34.6292 $\pm$ 0.0324 & +2.5098 \\
+Block 5\% & 0.2626 & 0.4178 $\pm$ 0.2259 & -0.1553 \\
+\hline
+\end{tabular}
+\vspace{1mm}
+\begin{minipage}{0.98\textwidth}
+\footnotesize
+Positive gain indicates improvement over interpolation.\\
+Block masking is an out-of-distribution stress case; SCALE-Former does not outperform interpolation there.\\
+\end{minipage}
+\end{table*}

@@ -1,0 +1,19 @@
+SCALE-FORMER PAPER TABLES AUDIT
+================================================================================
+
+PASS  Five manuscript tables generated from audited results/paper sources.
+
+Headline claims:
+PASS  SCALE-Former vs Transformer test missing-NMSE gain = 1.7121 dB
+PASS  SCALE-Former vs Transformer linear-NMSE reduction = 32.58%
+PASS  SCALE-Former vs CNN test missing-NMSE gain = 4.1191 dB
+PASS  SCALE-Former vs interpolation test missing-NMSE gain = 4.6510 dB
+
+Reporting checks:
+PASS  Block-mask failure retained.
+PASS  No-global confound stated.
+PASS  Repeated latency used.
+PASS  MAC-count limitations stated.
+PASS  No lightweight/faster claim introduced.
+
+FINAL STATUS: PAPER TABLES BUILT FROM AUDITED SOURCES

@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\centering
+\caption{SCALE-Former ablation study on DICHASUS-0056 under random 5\% observations.}
+\label{tab:ablation}
+\begin{tabular}{lrrr}
+\hline
+Variant & Parameters & Missing NMSE (dB) & Drop vs. full (dB) \\
+\hline
+Full SCALE-Former & 100,034 & -30.4879 $\pm$ 0.0837 & -- \\
+No global & 23,090 & -26.5498 $\pm$ 0.0382 & 3.9382 \\
+No learned local encoder & 82,178 & -25.9119 $\pm$ 0.0876 & 4.5761 \\
+No coordinates & 97,538 & -27.2467 $\pm$ 0.2109 & 3.2412 \\
+\hline
+\end{tabular}
+\vspace{1mm}
+\begin{minipage}{0.98\textwidth}
+\footnotesize
+Lower NMSE is better.\\
+The no-global result is capacity-confounded because the variant has substantially fewer trainable parameters.\\
+The no-local variant uses a pointwise encoder; the interpolation seed itself remains local.\\
+\end{minipage}
+\end{table*}

@@ -1,0 +1,23 @@
+\begin{table*}[t]
+\centering
+\caption{Primary validation and held-out test reconstruction performance.}
+\label{tab:primary-performance}
+\begin{tabular}{lrrrr}
+\hline
+Method & Parameters & Validation missing NMSE (dB) & Test full NMSE (dB) & Test missing NMSE (dB) \\
+\hline
+Linear interpolation & -- & -25.5839 & -25.7545 & -25.5322 \\
+Residual Frequency CNN & 60,160 & -26.1375 $\pm$ 0.0360 & -26.2864 $\pm$ 0.0374 & -26.0641 $\pm$ 0.0374 \\
+Full-Attention Transformer & 108,928 & -28.6716 $\pm$ 0.0631 & -28.6934 $\pm$ 0.0489 & -28.4711 $\pm$ 0.0489 \\
+SCALE-Former & 100,034 & -30.4879 $\pm$ 0.0837 & -30.4055 $\pm$ 0.0772 & -30.1832 $\pm$ 0.0772 \\
+\hline
+\end{tabular}
+\vspace{1mm}
+\begin{minipage}{0.98\textwidth}
+\footnotesize
+Lower NMSE is better.\\
+Learned models report mean ± sample standard deviation across three training seeds.\\
+Interpolation is deterministic.\\
+Held-out testing uses DICHASUS-0057 under the frozen random-5\% protocol.\\
+\end{minipage}
+\end{table*}

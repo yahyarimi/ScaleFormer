@@ -1,0 +1,6 @@
+| Variant | Parameters | Missing NMSE (dB) | Drop vs. full (dB) |
+| --- | --- | --- | --- |
+| Full SCALE-Former | 100,034 | -30.4879 ± 0.0837 | – |
+| No global | 23,090 | -26.5498 ± 0.0382 | 3.9382 |
+| No learned local encoder | 82,178 | -25.9119 ± 0.0876 | 4.5761 |
+| No coordinates | 97,538 | -27.2467 ± 0.2109 | 3.2412 |

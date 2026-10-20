@@ -1,0 +1,37 @@
+{
+    "sources": [
+        {
+            "key": "master",
+            "path": "results\\paper\\master_results.json",
+            "sha256": "c5790f28fb633ee6a1425e414fcff193f61c22a1059e78eedab067028991c4c2"
+        },
+        {
+            "key": "primary",
+            "path": "results\\paper\\primary_results.csv",
+            "sha256": "421da2cbcef9d243645a9c079d06b0d36454a917ed76bcbc9b044e8985ae288e"
+        },
+        {
+            "key": "robustness",
+            "path": "results\\paper\\robustness_results.csv",
+            "sha256": "59e8269413ee8117a4a5f2819bfa00ae0f93340ee3e80ba7fe698fcba8c0148c"
+        },
+        {
+            "key": "ablation",
+            "path": "results\\paper\\ablation_results.csv",
+            "sha256": "b47f5ac8064faa06b4f5fb766d180c05bee5a438b95bfd15849c951317985117"
+        },
+        {
+            "key": "efficiency",
+            "path": "results\\paper\\efficiency_results.csv",
+            "sha256": "6e62bf3b2bea59d4a05cb4a18c42d52a296b23e59d7c2556908d6dcc3ce3f7a1"
+        }
+    ],
+    "reporting_guardrails": [
+        "Use dense measured reference CSI; do not call it physical ground truth.",
+        "Controlled observation masks are not operational DICHASUS pilots.",
+        "Retain the block-mask failure.",
+        "Treat no-global as capacity-confounded.",
+        "Use repeated latency as the headline latency result.",
+        "Do not describe SCALE-Former as lightweight or computationally cheaper than the full Transformer."
+    ]
+}

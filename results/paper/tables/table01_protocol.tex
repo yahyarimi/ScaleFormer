@@ -1,0 +1,29 @@
+\begin{table*}[t]
+\centering
+\caption{Dataset and experimental protocol.}
+\label{tab:protocol}
+\begin{tabular}{ll}
+\hline
+Item & Setting \\
+\hline
+Dataset & DICHASUS-005x real measured CSI \\
+Training runs & 0053, 0054, 0055 \\
+Validation run & 0056 \\
+Held-out test run & 0057 \\
+Primary grid & B = 32 antennas, F = 1024 frequency coefficients \\
+Primary observation pattern & Random, frequency-shared across antennas \\
+Requested density & 5\% \\
+Observed frequencies & 51 / 1024 \\
+Validation/test mask seed & 42 \\
+Learned-model seeds & 7, 42, 123 \\
+Primary metric & dataset-level missing-region NMSE \\
+Metric scale & denormalized measured CSI \\
+\hline
+\end{tabular}
+\vspace{1mm}
+\begin{minipage}{0.98\textwidth}
+\footnotesize
+The primary protocol uses the same observed frequency positions across all antennas.\\
+Metrics are computed on the denormalized measured CSI scale.\\
+\end{minipage}
+\end{table*}

@@ -1,0 +1,25 @@
+\begin{table*}[t]
+\centering
+\caption{Controlled computational characteristics at B=32, F=1024 and batch size 1.}
+\label{tab:efficiency}
+\begin{tabular}{lrrrr}
+\hline
+Method & Parameters & Core MMACs & Peak GPU memory (MiB) & E2E latency (ms) \\
+\hline
+Linear interpolation & -- & -- & 1.7222 & 1.2866 $\pm$ 0.5674 \\
+Residual Frequency CNN & 60,160 & 60.8829 & 2.0762 & 3.0208 $\pm$ 1.3494 \\
+Full-Attention Transformer & 108,928 & 511.7706 & 12.2124 & 3.0617 $\pm$ 0.2088 \\
+SCALE-Former & 100,034 & 1256.1285 & 40.1797 & 12.3771 $\pm$ 0.1562 \\
+\hline
+\end{tabular}
+\vspace{1mm}
+\begin{minipage}{0.98\textwidth}
+\footnotesize
+Core MMACs count selected model tensor operations only.\\
+Interpolation, LayerNorm, softmax, activations, masking, indexing and other elementwise operations are excluded from the MAC count.\\
+Approximate FLOPs may be estimated as 2 FLOP/MAC.\\
+Learned-model inference uses AMP FP16; interpolation uses FP32.\\
+Latency is mean ± sample SD across five per-round end-to-end medians.\\
+Peak GPU memory uses torch.cuda.max\_memory\_allocated.\\
+\end{minipage}
+\end{table*}

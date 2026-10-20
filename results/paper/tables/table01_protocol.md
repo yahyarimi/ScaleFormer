@@ -1,0 +1,14 @@
+| Item | Setting |
+| --- | --- |
+| Dataset | DICHASUS-005x real measured CSI |
+| Training runs | 0053, 0054, 0055 |
+| Validation run | 0056 |
+| Held-out test run | 0057 |
+| Primary grid | B = 32 antennas, F = 1024 frequency coefficients |
+| Primary observation pattern | Random, frequency-shared across antennas |
+| Requested density | 5% |
+| Observed frequencies | 51 / 1024 |
+| Validation/test mask seed | 42 |
+| Learned-model seeds | 7, 42, 123 |
+| Primary metric | dataset-level missing-region NMSE |
+| Metric scale | denormalized measured CSI |
