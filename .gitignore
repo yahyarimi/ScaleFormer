@@ -41,3 +41,11 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+# Superseded/diagnostic experiment outputs
+/results/csv/complexity_benchmark.csv
+/results/csv/complexity_benchmark.json
+/results/csv/latency_benchmark.csv
+/results/csv/latency_benchmark.json
+/results/csv/*_smoke_summary.json
+/results/csv/*_smoke_training.csv
+/results/csv/training_normalization_before_0053_repair.json
