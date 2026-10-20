@@ -1,0 +1,40 @@
+{
+    "variant": "no_global",
+    "batch_size": 4,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0001,
+    "maximum_epochs": 10,
+    "patience": 3,
+    "model": "ScaleFormer",
+    "seed": 7,
+    "training_runs": [
+        "0053",
+        "0054",
+        "0055"
+    ],
+    "validation_run": "0056",
+    "pattern": "random",
+    "requested_density": 0.05,
+    "observed_subcarriers": 51,
+    "num_parameters": 23090,
+    "architecture": {
+        "variant": "no_global",
+        "dim": 48,
+        "heads": 4,
+        "latents": 16,
+        "local_blocks": 2,
+        "global_blocks": 2,
+        "decoder_blocks": 1,
+        "decoder_chunk_size": 4096
+    },
+    "best_epoch": 10,
+    "best_val_full_nmse_db": -26.78876398881289,
+    "best_val_missing_nmse_db": -26.566656232629285,
+    "interpolation_full_nmse_db": -25.806,
+    "interpolation_missing_nmse_db": -25.5839,
+    "improvement_vs_interpolation_full_db": 0.9827639888128878,
+    "improvement_vs_interpolation_missing_db": 0.9827562326292849,
+    "cnn_seed42_full_nmse_db": -26.3391,
+    "cnn_seed42_missing_nmse_db": -26.117,
+    "training_seconds": 1606.921993970871
+}
