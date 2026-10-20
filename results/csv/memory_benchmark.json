@@ -1,0 +1,39 @@
+{
+    "protocol": {
+        "batch_size": 1,
+        "grid_antennas": 32,
+        "grid_subcarriers": 1024,
+        "observed_subcarriers": 51,
+        "observation_density": 0.05,
+        "learned_precision": "AMP FP16",
+        "interpolation_precision": "FP32",
+        "repetitions": 3,
+        "metric": "torch.cuda.max_memory_allocated"
+    },
+    "results": [
+        {
+            "method": "Linear interpolation",
+            "parameters": 0,
+            "peak_mean_mib": 1.72216796875,
+            "peak_std_mib": 0.0,
+            "peak_max_mib": 1.72216796875,
+            "incremental_peak_mean_mib": 1.34716796875
+        },
+        {
+            "method": "Residual Frequency CNN",
+            "parameters": 60160,
+            "peak_mean_mib": 2.076171875,
+            "peak_std_mib": 0.0,
+            "peak_max_mib": 2.076171875,
+            "incremental_peak_mean_mib": 1.4677734375
+        },
+        {
+            "method": "SCALE-Former",
+            "parameters": 100034,
+            "peak_mean_mib": 41.0546875,
+            "peak_std_mib": 0.0,
+            "peak_max_mib": 41.0546875,
+            "incremental_peak_mean_mib": 30.28125
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+method,parameters,mmacs,approximate_gflops,attention_calls
+Residual Frequency CNN,60160,60.882944,0.121765888,0
+SCALE-Former,100034,1256.128512,2.512257024,12
