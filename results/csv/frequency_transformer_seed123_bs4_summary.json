@@ -1,0 +1,39 @@
+{
+    "model": "FrequencyTransformerBaseline",
+    "seed": 123,
+    "batch_size": 4,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0001,
+    "maximum_epochs": 10,
+    "patience": 3,
+    "training_runs": [
+        "0053",
+        "0054",
+        "0055"
+    ],
+    "validation_run": "0056",
+    "pattern": "random",
+    "requested_density": 0.05,
+    "observed_subcarriers": 51,
+    "validation_mask_seed": 42,
+    "num_parameters": 108928,
+    "architecture": {
+        "num_antennas": 32,
+        "dim": 64,
+        "heads": 4,
+        "layers": 3,
+        "ff_dim": 128,
+        "dropout": 0.0
+    },
+    "best_epoch": 10,
+    "best_val_full_nmse_db": -28.84443202614073,
+    "best_val_missing_nmse_db": -28.622324269957133,
+    "interpolation_full_nmse_db": -25.806,
+    "interpolation_missing_nmse_db": -25.5839,
+    "improvement_vs_interpolation_full_db": 3.038432026140729,
+    "improvement_vs_interpolation_missing_db": 3.038424269957133,
+    "cnn_validation_full_nmse_db": -26.3596,
+    "cnn_validation_missing_nmse_db": -26.1375,
+    "difference_vs_cnn_missing_db": 2.4848242699571337,
+    "training_seconds": 986.2577922344208
+}

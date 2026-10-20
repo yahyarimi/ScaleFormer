@@ -1,0 +1,49 @@
+{
+    "seeds": [
+        7,
+        42,
+        123
+    ],
+    "per_seed": [
+        {
+            "seed": 7,
+            "best_epoch": 10,
+            "num_parameters": 108928,
+            "full_nmse_db": -28.96488739091897,
+            "missing_nmse_db": -28.742779634735367,
+            "training_seconds": 989.8757555484772
+        },
+        {
+            "seed": 42,
+            "best_epoch": 10,
+            "num_parameters": 108928,
+            "full_nmse_db": -28.871915309969324,
+            "missing_nmse_db": -28.64980755378572,
+            "training_seconds": 1027.2502040863037
+        },
+        {
+            "seed": 123,
+            "best_epoch": 10,
+            "num_parameters": 108928,
+            "full_nmse_db": -28.84443202614073,
+            "missing_nmse_db": -28.622324269957133,
+            "training_seconds": 986.2577922344208
+        }
+    ],
+    "summary": {
+        "method": "Full-attention Frequency Transformer",
+        "num_training_seeds": 3,
+        "num_parameters": 108928,
+        "full_nmse_db_mean": -28.893744909009676,
+        "full_nmse_db_std": 0.06312505264680295,
+        "missing_nmse_db_mean": -28.671637152826072,
+        "missing_nmse_db_std": 0.06312505264680017,
+        "gain_vs_interpolation_full_db": 3.0877449090096754,
+        "gain_vs_interpolation_missing_db": 3.0877371528260724,
+        "gain_vs_cnn_full_db": 2.534144909009676,
+        "gain_vs_cnn_missing_db": 2.534137152826073,
+        "scaleformer_advantage_full_db": 1.8162550909903246,
+        "scaleformer_advantage_missing_db": 1.8162628471739275,
+        "scaleformer_linear_nmse_reduction_percent": 34.177599712331876
+    }
+}
