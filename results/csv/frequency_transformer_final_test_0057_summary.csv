@@ -1,0 +1,2 @@
+method,num_training_seeds,num_parameters,full_nmse_db_mean,full_nmse_db_std,missing_nmse_db_mean,missing_nmse_db_std,gain_vs_interpolation_missing_db,gain_vs_cnn_missing_db,scaleformer_advantage_missing_db,scaleformer_linear_nmse_reduction_percent
+Full-Attention Transformer,3,108928,-28.693400449129943,0.048937357687060146,-28.471136376869893,0.04893735768705874,2.9389363768698935,2.4070363768698932,1.7120636231301063,32.57924094802787

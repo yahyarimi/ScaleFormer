@@ -1,0 +1,80 @@
+{
+    "protocol": {
+        "test_run": "0057",
+        "num_test_samples": 5001,
+        "pattern": "random",
+        "requested_density": 0.05,
+        "observed_subcarriers": 51,
+        "mask_seed": 42,
+        "training_seeds": [
+            7,
+            42,
+            123
+        ],
+        "batch_size": 8,
+        "normalization": "training-set statistics only",
+        "retraining": false,
+        "hyperparameter_tuning": false,
+        "checkpoint_selection": "best validation missing-region NMSE on DICHASUS 0056"
+    },
+    "interpolation_sanity_check": {
+        "recomputed_full_nmse_db": -25.754476015443856,
+        "recomputed_missing_nmse_db": -25.532211943183807,
+        "frozen_full_nmse_db": -25.7545,
+        "frozen_missing_nmse_db": -25.5322,
+        "tolerance_db": 0.001,
+        "passed": true
+    },
+    "per_seed": [
+        {
+            "seed": 7,
+            "full_nmse_db": -28.748363447761452,
+            "missing_nmse_db": -28.526099375501403,
+            "max_observed_error": 0.0
+        },
+        {
+            "seed": 42,
+            "full_nmse_db": -28.6772840966881,
+            "missing_nmse_db": -28.455020024428052,
+            "max_observed_error": 0.0
+        },
+        {
+            "seed": 123,
+            "full_nmse_db": -28.65455380294027,
+            "missing_nmse_db": -28.432289730680225,
+            "max_observed_error": 0.0
+        }
+    ],
+    "summary": {
+        "method": "Full-Attention Transformer",
+        "num_training_seeds": 3,
+        "num_parameters": 108928,
+        "full_nmse_db_mean": -28.693400449129943,
+        "full_nmse_db_std": 0.048937357687060146,
+        "missing_nmse_db_mean": -28.471136376869893,
+        "missing_nmse_db_std": 0.04893735768705874,
+        "gain_vs_interpolation_missing_db": 2.9389363768698935,
+        "gain_vs_cnn_missing_db": 2.4070363768698932,
+        "scaleformer_advantage_missing_db": 1.7120636231301063,
+        "scaleformer_linear_nmse_reduction_percent": 32.57924094802787
+    },
+    "frozen_reference_results": {
+        "linear_interpolation": {
+            "full_nmse_db": -25.7545,
+            "missing_nmse_db": -25.5322
+        },
+        "residual_frequency_cnn": {
+            "full_nmse_db_mean": -26.2864,
+            "full_nmse_db_std": 0.0374,
+            "missing_nmse_db_mean": -26.0641,
+            "missing_nmse_db_std": 0.0374
+        },
+        "scaleformer": {
+            "full_nmse_db_mean": -30.4055,
+            "full_nmse_db_std": 0.0772,
+            "missing_nmse_db_mean": -30.1832,
+            "missing_nmse_db_std": 0.0772
+        }
+    },
+    "evaluation_seconds": 39.83981939998921
+}
